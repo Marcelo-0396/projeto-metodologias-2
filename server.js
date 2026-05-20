@@ -42,5 +42,5 @@ app.post('/api/login', (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Servidor a rodar em http://localhost:${PORT}`);
+    console.log(`Servidor a rodar em https://marcelo-0396.github.io/projeto-metodologias-2/ na porta ${PORT}`);
 });

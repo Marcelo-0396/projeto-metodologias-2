@@ -55,7 +55,7 @@
     const senhaDigitada = document.getElementById('senha').value;
 
     try {
-      const resposta = await fetch('http://localhost:3000/api/login', {
+      const resposta = await fetch('https://marcelo-0396.github.io/projeto-metodologias-2/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: emailDigitado, senha: senhaDigitada })
