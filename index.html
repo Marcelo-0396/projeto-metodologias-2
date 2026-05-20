@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oliveira & Medeiros — Advocacia</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav id="navbar">
+  <a href="index.html" class="logo">Oliveira <span>&</span> Medeiros</a>
+  <div class="menu-toggle" id="mobile-menu">☰</div>
+  <ul id="nav-list">
+    <li><a href="index.html" class="nav-link active">Início</a></li>
+    <li><a href="processos.html" class="nav-link">Processos</a></li>
+    <li><a href="login.html" class="nav-link">Área do Cliente</a></li>
+    <li><a href="admin.html" class="nav-link">Admin</a></li>
+  </ul>
+</nav>
+
+<section id="hero">
+  <div>
+    <p class="hero-tag">Advocacia & Consultoria Jurídica</p>
+    <h1>Defendendo os seus <span>direitos</span><br>com excelência</h1>
+    <p>Assessoria jurídica especializada com atendimento humanizado e comprometido com os seus resultados.</p>
+    <a href="#contato" class="btn btn-fill">Fale Connosco</a>
+    &nbsp;&nbsp;
+    <a href="#sobre" class="btn">Conheça o Escritório</a>
+  </div>
+</section>
+
+<section id="sobre">
+  <div class="sobre-grid">
+    <div class="sobre-img">⚖️</div>
+    <div class="sobre-text">
+      <p class="section-label">Sobre o Escritório</p>
+      <h2 class="section-title">Tradição, ética<br>e resultado</h2>
+      <div class="divider"></div>
+      <p>O escritório Oliveira & Medeiros atua há mais de 10 anos a oferecer soluções jurídicas completas e personalizadas. A nossa equipe é formada por profissionais altamente qualificados, com experiência em diversas áreas do direito.</p>
+      <div class="stats">
+        <div><span class="stat-num">+450</span><span class="stat-label">Casos resolvidos</span></div>
+        <div><span class="stat-num">10+</span><span class="stat-label">Anos de experiência</span></div>
+        <div><span class="stat-num">98%</span><span class="stat-label">Satisfação</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contato">
+  <div class="contato-inner">
+    <p class="section-label">Entre em Contato</p>
+    <h2 class="section-title">Fale com um<br>advogado agora</h2>
+    <div class="divider"></div>
+
+    <form id="meuForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="nome">Nome completo</label>
+            <input type="text" id="nome" placeholder="O seu nome" required>
+          </div>
+          <div class="form-group">
+            <label for="tel">Telefone / WhatsApp</label>
+            <input type="tel" id="tel" placeholder="(00) 00000-0000" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" placeholder="seu@email.com">
+        </div>
+        <div class="form-group">
+          <label for="assunto">Assunto da Consulta</label>
+          <select id="assunto" required>
+            <option value="">Selecione uma opção...</option>
+            <option>Agendar Consultoria</option>
+            <option>Dúvida sobre um Processo</option>
+            <option>Ação Trabalhista</option>
+            <option>Direito de Família / Divórcio</option>
+            <option>Defesa Criminal</option>
+            <option>Outros Assuntos</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="msg">Mensagem</label>
+          <textarea id="msg" placeholder="Descreva brevemente a sua situação..."></textarea>
+        </div>
+        <div class="form-submit">
+          <button type="submit" id="btnEnviar" class="btn btn-fill" style="width: 100%;">
+            Enviar via WhatsApp
+          </button>
+        </div>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">OLIVEIRA & MEDEIROS</div>
+  <div class="footer-info">
+    📍 Edifício Mundo Plaza Empresarial — 24° Andar, Salvador/BA<br>
+    📞 (71) 99999-0000 &nbsp;|&nbsp; ✉️ contato@oliveiramedeiros.com.br<br>
+    ⏰ Seg–Sex: 8h às 18h
+  </div>
+  <div class="footer-copy">© 2026 Oliveira & Medeiros. Todos os direitos reservados. OAB/BA 00000</div>
+</footer>
+
+<script>
+  const navbar = document.getElementById('navbar');
+  const navLinks = document.querySelectorAll('.nav-link');
+  const sections = document.querySelectorAll('section');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const navList = document.getElementById('nav-list');
+
+  mobileMenu.addEventListener('click', () => {
+    navList.classList.toggle('show');
+  });
+
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      navList.classList.remove('show');
+    });
+  });
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+
+    let current = '';
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop;
+      if (scrollY >= (sectionTop - 150)) {
+        current = section.getAttribute('id');
+      }
+    });
+
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href').includes(current)) {
+        link.classList.add('active');
+      }
+    });
+  });
+
+  document.getElementById('meuForm').addEventListener('submit', function(e) {
+    e.preventDefault(); 
+    const meuNumero = "5571989525751"; 
+    const nome = document.getElementById('nome').value;
+    const tel = document.getElementById('tel').value;
+    const email = document.getElementById('email').value || "Não informado";
+    const assunto = document.getElementById('assunto').value;
+    const msg = document.getElementById('msg').value || "Nenhuma mensagem adicional.";
+    const texto = `*Novo Contacto via Site*\n\n` +
+                  `*Nome:* ${nome}\n` +
+                  `*Telefone:* ${tel}\n` +
+                  `*E-mail:* ${email}\n` +
+                  `*Assunto:* ${assunto}\n` +
+                  `*Situação:* ${msg}`;
+    const textoCodificado = encodeURIComponent(texto);
+    const url = `https://wa.me/${meuNumero}?text=${textoCodificado}`;
+    window.open(url, '_blank');
+  });
+</script>
+
+</body>
+</html>

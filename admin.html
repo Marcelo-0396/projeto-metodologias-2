@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Admin - Oliveira & Medeiros</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav id="navbar">
+  <a href="index.html" class="logo">Oliveira <span>&</span> Medeiros</a>
+  <div class="menu-toggle" id="mobile-menu">☰</div>
+  <ul id="nav-list">
+    <li><a href="index.html" class="nav-link">Início</a></li>
+    <li><a href="processos.html" class="nav-link">Processos</a></li>
+    <li><a href="login.html" class="nav-link">Área do Cliente</a></li>
+    <li><a href="admin.html" class="nav-link active">Admin</a></li>
+  </ul>
+</nav>
+
+<div class="page-container">
+  <div style="width: 100%; max-width: 900px;">
+    <h2 class="box-title" style="text-align: left; margin-bottom: 2rem;">Painel do Administrador</h2>
+    
+    <div class="admin-grid">
+      
+      <div class="admin-item">
+        <div style="font-size: 2.5rem; margin-bottom: 1rem;">👥</div>
+        <h3>Gestão de Clientes</h3>
+        <button class="btn btn-fill" style="width: 100%;">Novo Cliente</button>
+      </div>
+
+      <div class="admin-item">
+        <div style="font-size: 2.5rem; margin-bottom: 1rem;">⚖️</div>
+        <h3>Controle de Processos</h3>
+        <button class="btn btn-fill" style="width: 100%;">Cadastrar Processo</button>
+      </div>
+
+      <div class="admin-item">
+        <div style="font-size: 2.5rem; margin-bottom: 1rem;">👤</div>
+        <h3>Gestão de Equipe</h3>
+        <button class="btn btn-fill" style="width: 100%;">Novo Membro</button>
+      </div>
+
+      <div class="admin-item">
+        <div style="font-size: 2.5rem; margin-bottom: 1rem;">📅</div>
+        <h3>Ações e Prazos</h3>
+        <div class="admin-actions-grid">
+          <button class="btn" style="padding: 0.8rem; font-size: 0.7rem;">Agendar Reunião</button>
+          <button class="btn" style="padding: 0.8rem; font-size: 0.7rem;">Faturar Cliente</button>
+          <button class="btn" style="padding: 0.8rem; font-size: 0.7rem;">Prazos</button>
+          <button class="btn" style="padding: 0.8rem; font-size: 0.7rem;">Jurisprudência</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  const mobileMenu = document.getElementById('mobile-menu');
+  const navList = document.getElementById('nav-list');
+  mobileMenu.addEventListener('click', () => { navList.classList.toggle('show'); });
+</script>
+
+</body>
+</html>
