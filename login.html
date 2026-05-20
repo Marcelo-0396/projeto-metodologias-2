@@ -24,7 +24,7 @@
     <h2 class="box-title">Área do Cliente</h2>
     <p class="box-subtitle">Aceda aos seus processos e documentos</p>
     
-    <form onsubmit="event.preventDefault(); alert('Login em desenvolvimento!');">
+    <form id="formLogin">
       <div class="form-group">
         <label for="email">E-mail</label>
         <input type="email" id="email" placeholder="Digite seu email" required>
@@ -47,6 +47,32 @@
   const mobileMenu = document.getElementById('mobile-menu');
   const navList = document.getElementById('nav-list');
   mobileMenu.addEventListener('click', () => { navList.classList.toggle('show'); });
+
+  document.getElementById('formLogin').addEventListener('submit', async function(e) {
+    e.preventDefault(); 
+
+    const emailDigitado = document.getElementById('email').value;
+    const senhaDigitada = document.getElementById('senha').value;
+
+    try {
+      const resposta = await fetch('http://localhost:3000/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: emailDigitado, senha: senhaDigitada })
+      });
+
+      const dados = await resposta.json();
+
+      if (dados.sucesso) {
+        alert('Bem-vindo à Área do Cliente!');
+      } else {
+        alert('Acesso negado: ' + dados.mensagem);
+      }
+    } catch (erro) {
+      console.error(erro);
+      alert('Erro ao conectar com o servidor. Certifique-se de que o Node.js está rodando.');
+    }
+  });
 </script>
 
 </body>
