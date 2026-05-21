@@ -18,7 +18,7 @@ const db = new sqlite3.Database('./database.db', (err) => {
             senha TEXT
         )`);
 
-        db.run(`INSERT OR IGNORE INTO clientes (email, senha) VALUES ('cliente@teste.com', '123456')`);
+        db.run(`INSERT OR IGNORE INTO clientes (email, senha) VALUES ('celobittencourt.03@gmail.com', '123456')`);
     }
 });
 
