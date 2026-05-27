@@ -1,167 +1,619 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Oliveira & Medeiros — Advocacia</title>
-  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* ==========================================
+       VARIÁVEIS DE CORES (A Nova Paleta)
+       ========================================== */
+    :root {
+      --sky-blue-light: #78c0e0ff;
+      --blue-bell: #449dd1ff;
+      --navy: #150578ff;
+      --deep-twilight: #0e0e52ff;
+      --ocean-twilight: #3943b7ff;
+
+      --branco: #ffffff;
+      --cinza-claro: #f4f4f4;
+      --cinza-borda: #ddd;
+    }
+
+    /* ==========================================
+       ESTILOS GERAIS E TIPOGRAFIA
+       ========================================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: sans-serif;
+    }
+
+    body {
+      color: var(--navy);
+      background-color: var(--branco);
+      line-height: 1.6;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    /* Botões */
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.3s ease;
+      border: 2px solid var(--blue-bell);
+      color: var(--blue-bell);
+      background: transparent;
+    }
+
+    .btn:hover {
+      background: var(--sky-blue-light);
+      border-color: var(--sky-blue-light);
+      color: var(--deep-twilight);
+    }
+
+    .btn-fill {
+      background: var(--blue-bell);
+      color: var(--branco);
+      border: 2px solid var(--blue-bell);
+    }
+
+    .btn-fill:hover {
+      background: var(--ocean-twilight);
+      border-color: var(--ocean-twilight);
+      color: var(--branco);
+    }
+
+    /* ==========================================
+       NAVEGAÇÃO (Navbar)
+       ========================================== */
+    #navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 5%;
+      background: var(--deep-twilight);
+      z-index: 1000;
+      transition: 0.3s;
+    }
+
+    #navbar .logo {
+      color: var(--branco);
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    #navbar .logo span {
+      color: var(--sky-blue-light);
+    }
+
+    #nav-list {
+      display: flex;
+      list-style: none;
+      gap: 20px;
+    }
+
+    .nav-link {
+      color: var(--branco);
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: var(--sky-blue-light);
+    }
+
+    .menu-toggle {
+      display: none;
+      color: var(--branco);
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    /* ==========================================
+       PÁGINA INICIAL (Home)
+       ========================================== */
+    #hero {
+      background: linear-gradient(135deg, var(--deep-twilight), var(--navy));
+      color: var(--branco);
+      padding: 150px 5% 100px;
+      text-align: center;
+    }
+
+    #hero h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+
+    #hero h1 span {
+      color: var(--sky-blue-light);
+    }
+
+    #hero p {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    section {
+      padding: 60px 5%;
+    }
+
+    /* ==========================================
+       CONTROLE DE VISUALIZAÇÃO (SPA)
+       ========================================== */
+    .view-section {
+      display: none;
+      padding-top: 100px;
+      min-height: 80vh;
+    }
+
+    .view-section.active {
+      display: block;
+    }
+
+    #view-home.active {
+      padding-top: 0;
+    }
+
+    /* ==========================================
+       SISTEMA: LOGIN E PAINÉIS
+       ========================================== */
+    .system-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .system-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      border-bottom: 2px solid var(--sky-blue-light);
+      padding-bottom: 10px;
+      color: var(--navy);
+    }
+
+    /* Login */
+    .login-box {
+      max-width: 400px;
+      margin: 40px auto;
+      padding: 30px;
+      background: var(--cinza-claro);
+      border-radius: 8px;
+      border-top: 5px solid var(--ocean-twilight);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: var(--navy);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--cinza-borda);
+      border-radius: 4px;
+    }
+
+    .login-error {
+      color: #e74c3c;
+      font-size: 14px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    /* Tabela de Processos */
+    .process-card {
+      background: var(--branco);
+      border-left: 5px solid var(--blue-bell);
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .process-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: var(--navy);
+    }
+
+    .status-badge {
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: bold;
+      color: var(--branco);
+    }
+
+    .status-andamento {
+      background: var(--ocean-twilight);
+    }
+
+    .status-concluido {
+      background: var(--sky-blue-light);
+      color: var(--deep-twilight);
+    }
+
+    /* ==========================================
+       RODAPÉ (Footer)
+       ========================================== */
+    footer {
+      background: var(--deep-twilight);
+      color: var(--sky-blue-light);
+      text-align: center;
+      padding: 30px 5%;
+      margin-top: 40px;
+    }
+
+    .footer-logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--branco);
+      margin-bottom: 10px;
+    }
+
+    /* ==========================================
+       RESPONSIVIDADE
+       ========================================== */
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: block;
+      }
+
+      #nav-list {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background: var(--navy);
+        padding: 20px;
+      }
+
+      #nav-list.show {
+        display: flex;
+      }
+
+      .system-header {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .form-row {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<nav id="navbar">
-  <a href="index.html" class="logo">Oliveira <span>&</span> Medeiros</a>
-  <div class="menu-toggle" id="mobile-menu">☰</div>
-  <ul id="nav-list">
-    <li><a href="index.html" class="nav-link active">Início</a></li>
-    <li><a href="processos.html" class="nav-link">Processos</a></li>
-    <li><a href="login.html" class="nav-link">Área do Cliente</a></li>
-    <li><a href="admin.html" class="nav-link">Admin</a></li>
-  </ul>
-</nav>
+  <nav id="navbar">
+    <a href="#" onclick="navigate('home')" class="logo">Oliveira <span>&</span> Medeiros</a>
+    <div class="menu-toggle" id="mobile-menu">☰</div>
+    <ul id="nav-list">
+      <li><a href="#" onclick="navigate('home')" class="nav-link active" data-target="home">Início</a></li>
+      <li><a href="#" onclick="navigate('login')" class="nav-link" data-target="login">Área do Cliente</a></li>
+      <li><a href="admin.html" class="nav-link">Admin</a></li>
+    </ul>
+  </nav>
 
-<section id="hero">
-  <div>
-    <p class="hero-tag">Advocacia & Consultoria Jurídica</p>
-    <h1>Defendendo os seus <span>direitos</span><br>com excelência</h1>
-    <p>Assessoria jurídica especializada com atendimento humanizado e comprometido com os seus resultados.</p>
-    <a href="#contato" class="btn btn-fill">Fale Connosco</a>
-    
-    <a href="#sobre" class="btn">Conheça o Escritório</a>
+  <div id="view-home" class="view-section active">
+    <section id="hero">
+      <div>
+        <p class="hero-tag">Advocacia & Consultoria Jurídica</p>
+        <h1>Defendendo os seus <span>direitos</span><br>com excelência</h1>
+        <p>Assessoria jurídica especializada com atendimento humanizado e comprometido com os seus resultados.</p>
+        <a href="#contato" class="btn btn-fill">Fale Connosco</a>
+        <a href="#sobre" class="btn">Conheça o Escritório</a>
+      </div>
+    </section>
+
+    <section id="sobre">
+      <div class="sobre-grid">
+        <div class="sobre-text">
+          <p class="section-label" style="color: var(--blue-bell); font-weight: bold;">Sobre o Escritório</p>
+          <h2 class="section-title">Tradição, ética e resultado</h2>
+          <div class="divider"
+            style="height: 3px; background: var(--sky-blue-light); width: 50px; margin: 10px 0 20px;"></div>
+          <p>O escritório Oliveira & Medeiros atua há mais de 10 anos a oferecer soluções jurídicas completas e
+            personalizadas. A nossa equipa é formada por profissionais altamente qualificados, com experiência em
+            diversas áreas do direito.</p>
+          <div class="stats" style="display: flex; gap: 20px; margin-top: 20px;">
+            <div><span class="stat-num"
+                style="font-size: 24px; font-weight: bold; color: var(--ocean-twilight);">+450</span><br><span
+                class="stat-label">Casos resolvidos</span></div>
+            <div><span class="stat-num"
+                style="font-size: 24px; font-weight: bold; color: var(--ocean-twilight);">10+</span><br><span
+                class="stat-label">Anos de experiência</span></div>
+            <div><span class="stat-num"
+                style="font-size: 24px; font-weight: bold; color: var(--ocean-twilight);">98%</span><br><span
+                class="stat-label">Satisfação</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contato" style="background: var(--cinza-claro);">
+      <div class="contato-inner" style="max-width: 600px; margin: 0 auto;">
+        <p class="section-label" style="color: var(--blue-bell); font-weight: bold; text-align: center;">Entre em
+          Contato</p>
+        <h2 class="section-title" style="text-align: center;">Fale com um advogado agora</h2>
+        <div class="divider"
+          style="height: 3px; background: var(--sky-blue-light); width: 50px; margin: 10px auto 30px;"></div>
+
+        <form id="meuForm"
+          style="background: var(--branco); padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+          <div class="form-row" style="display: flex; gap: 15px;">
+            <div class="form-group" style="flex: 1;">
+              <label for="nome">Nome completo</label>
+              <input type="text" id="nome" placeholder="O seu nome" required>
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <label for="tel">Telefone / WhatsApp</label>
+              <input type="tel" id="tel" placeholder="(00) 00000-0000" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" placeholder="seu@email.com">
+          </div>
+          <div class="form-group">
+            <label for="assunto">Assunto da Consulta</label>
+            <select id="assunto" required>
+              <option value="">Selecione uma opção...</option>
+              <option>Agendar Consultoria</option>
+              <option>Dúvida sobre um Processo</option>
+              <option>Ação Trabalhista</option>
+              <option>Direito de Família / Divórcio</option>
+              <option>Defesa Criminal</option>
+              <option>Outros Assuntos</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="msg">Mensagem</label>
+            <textarea id="msg" placeholder="Descreva brevemente a sua situação..." rows="4"></textarea>
+          </div>
+          <div class="form-submit">
+            <button type="submit" id="btnEnviar" class="btn btn-fill" style="width: 100%;">
+              Enviar via WhatsApp
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
   </div>
-</section>
 
-<section id="sobre">
-  <div class="sobre-grid">
-    <div class="sobre-img">⚖️</div>
-    <div class="sobre-text">
-      <p class="section-label">Sobre o Escritório</p>
-      <h2 class="section-title">Tradição, ética<br>e resultado</h2>
-      <div class="divider"></div>
-      <p>O escritório Oliveira & Medeiros atua há mais de 10 anos a oferecer soluções jurídicas completas e personalizadas. A nossa equipe é formada por profissionais altamente qualificados, com experiência em diversas áreas do direito.</p>
-      <div class="stats">
-        <div><span class="stat-num">+450</span><span class="stat-label">Casos resolvidos</span></div>
-        <div><span class="stat-num">10+</span><span class="stat-label">Anos de experiência</span></div>
-        <div><span class="stat-num">98%</span><span class="stat-label">Satisfação</span></div>
+  <div id="view-login" class="view-section">
+    <div class="system-container login-box">
+      <h2 style="text-align: center; margin-bottom: 20px; color: var(--navy);">Acesso do Cliente</h2>
+
+      <form id="form-login">
+        <div class="form-group">
+          <label for="login-user">CPF do Cliente</label>
+          <input type="text" id="login-user" required>
+        </div>
+        <div class="form-group">
+          <label for="login-pass">Senha</label>
+          <input type="password" id="login-pass" required>
+        </div>
+        <p id="login-error" class="login-error">Credenciais inválidas!</p>
+        <button type="submit" class="btn btn-fill" style="width: 100%; margin-top: 10px;">Entrar</button>
+      </form>
+      <p style="text-align: center; font-size: 12px; margin-top: 15px; color: #666;">
+        (Dica de teste -> Cliente: cliente / 123)
+      </p>
+    </div>
+  </div>
+
+  <div id="view-cliente" class="view-section">
+    <div class="system-container">
+      <div class="system-header">
+        <h2>Meus Processos</h2>
+        <button onclick="logout()" class="btn">Sair</button>
+      </div>
+      <div id="lista-processos-cliente">
       </div>
     </div>
   </div>
-</section>
 
-<section id="contato">
-  <div class="contato-inner">
-    <p class="section-label">Entre em Contato</p>
-    <h2 class="section-title">Fale com um<br>advogado agora</h2>
-    <div class="divider"></div>
+  <footer>
+    <div class="footer-logo">OLIVEIRA <span style="color: var(--sky-blue-light);">&</span> MEDEIROS</div>
+    <div class="footer-info">
+      📍 Edifício Mundo Plaza Empresarial — 24° Andar, Salvador/BA<br>
+      📞 (71) 98952-5751 | ✉️ contato@oliveiramedeiros.com.br<br>
+      ⏰ Seg–Sex: 8h às 18h
+    </div>
+    <div class="footer-copy" style="margin-top: 20px; font-size: 0.9em;">
+      © 2026 Oliveira & Medeiros. Todos os direitos reservados. OAB/BA 00000
+    </div>
+  </footer>
 
-    <form id="meuForm">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="nome">Nome completo</label>
-            <input type="text" id="nome" placeholder="O seu nome" required>
-          </div>
-          <div class="form-group">
-            <label for="tel">Telefone / WhatsApp</label>
-            <input type="tel" id="tel" placeholder="(00) 00000-0000" required>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="email">E-mail</label>
-          <input type="email" id="email" placeholder="seu@email.com">
-        </div>
-        <div class="form-group">
-          <label for="assunto">Assunto da Consulta</label>
-          <select id="assunto" required>
-            <option value="">Selecione uma opção...</option>
-            <option>Agendar Consultoria</option>
-            <option>Dúvida sobre um Processo</option>
-            <option>Ação Trabalhista</option>
-            <option>Direito de Família / Divórcio</option>
-            <option>Defesa Criminal</option>
-            <option>Outros Assuntos</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="msg">Mensagem</label>
-          <textarea id="msg" placeholder="Descreva brevemente a sua situação..."></textarea>
-        </div>
-        <div class="form-submit">
-          <button type="submit" id="btnEnviar" class="btn btn-fill" style="width: 100%;">
-            Enviar via WhatsApp
-          </button>
-        </div>
-    </form>
-  </div>
-</section>
+  <script>
+    /* ==================================================
+       1. NAVEGAÇÃO E SCROLL
+       ================================================== */
+    const navbar = document.getElementById('navbar');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('section');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const navList = document.getElementById('nav-list');
 
-<footer>
-  <div class="footer-logo">OLIVEIRA & MEDEIROS</div>
-  <div class="footer-info">
-    📍 Edifício Mundo Plaza Empresarial — 24° Andar, Salvador/BA<br>
-    📞 (71) 98952-5751  | ✉️ contato@oliveiramedeiros.com.br<br>
-    ⏰ Seg–Sex: 8h às 18h
-  </div>
-  <div class="footer-copy">© 2026 Oliveira & Medeiros. Todos os direitos reservados. OAB/BA 00000</div>
-</footer>
-
-<script>
-  const navbar = document.getElementById('navbar');
-  const navLinks = document.querySelectorAll('.nav-link');
-  const sections = document.querySelectorAll('section');
-  const mobileMenu = document.getElementById('mobile-menu');
-  const navList = document.getElementById('nav-list');
-
-  mobileMenu.addEventListener('click', () => {
-    navList.classList.toggle('show');
-  });
-
-  navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-      navList.classList.remove('show');
-    });
-  });
-
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 50) {
-      navbar.classList.add('scrolled');
-    } else {
-      navbar.classList.remove('scrolled');
-    }
-
-    let current = '';
-    sections.forEach(section => {
-      const sectionTop = section.offsetTop;
-      if (scrollY >= (sectionTop - 150)) {
-        current = section.getAttribute('id');
-      }
+    mobileMenu.addEventListener('click', () => {
+      navList.classList.toggle('show');
     });
 
     navLinks.forEach(link => {
-      link.classList.remove('active');
-      if (link.getAttribute('href').includes(current)) {
-        link.classList.add('active');
+      link.addEventListener('click', () => {
+        navList.classList.remove('show');
+      });
+    });
+
+    window.addEventListener('scroll', () => {
+      if (document.getElementById('view-home').classList.contains('active')) {
+        let current = '';
+        sections.forEach(section => {
+          const sectionTop = section.offsetTop;
+          if (scrollY >= (sectionTop - 150)) {
+            current = section.getAttribute('id');
+          }
+        });
+
+        navLinks.forEach(link => {
+          if (link.getAttribute('data-target') === 'home') {
+            link.classList.add('active');
+          } else {
+            link.classList.remove('active');
+          }
+        });
       }
     });
-  });
 
-  document.getElementById('meuForm').addEventListener('submit', function(e) {
-    e.preventDefault(); 
-    const meuNumero = "5571989525751"; 
-    const nome = document.getElementById('nome').value;
-    const tel = document.getElementById('tel').value;
-    const email = document.getElementById('email').value || "Não informado";
-    const assunto = document.getElementById('assunto').value;
-    const msg = document.getElementById('msg').value || "Nenhuma mensagem adicional.";
-    const texto = `*Novo Contato via Site*\n\n` +
-                  `*Nome:* ${nome}\n` +
-                  `*Telefone:* ${tel}\n` +
-                  `*E-mail:* ${email}\n` +
-                  `*Assunto:* ${assunto}\n` +
-                  `*Situação:* ${msg}`;
-    const textoCodificado = encodeURIComponent(texto);
-    const url = `https://web.whatsapp.com/send?phone=${meuNumero}&text=${textoCodificado}`;
-    window.open(url, '_blank');
-  });
-</script>
+    /* ==================================================
+       2. WHATSAPP FORM
+       ================================================== */
+    document.getElementById('meuForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const meuNumero = "5571989525751";
+      const nome = document.getElementById('nome').value;
+      const tel = document.getElementById('tel').value;
+      const email = document.getElementById('email').value || "Não informado";
+      const assunto = document.getElementById('assunto').value;
+      const msg = document.getElementById('msg').value || "Nenhuma mensagem adicional.";
+
+      const texto = `*Novo Contato via Site*\n\n` +
+        `*Nome:* ${nome}\n` +
+        `*Telefone:* ${tel}\n` +
+        `*E-mail:* ${email}\n` +
+        `*Assunto:* ${assunto}\n` +
+        `*Situação:* ${msg}`;
+
+      const textoCodificado = encodeURIComponent(texto);
+      const url = `https://web.whatsapp.com/send?phone=${meuNumero}&text=${textoCodificado}`;
+      window.open(url, '_blank');
+    });
+
+    /* ==================================================
+       3. LÓGICA SPA E SISTEMA DE PROCESSOS
+       ================================================== */
+    let bdProcessos = [];
+
+    // Integração dos dados usando localStorage para conectar as duas páginas (Admin/Cliente)
+    function loadProcessos() {
+      const data = localStorage.getItem('bdProcessos');
+      if (data) {
+        bdProcessos = JSON.parse(data);
+      } else {
+        bdProcessos = [
+          { numero: '0001234-56.2023.8.05.0001', cliente: 'cliente', nomeCliente: 'João Silva', acao: 'Ação Trabalhista', status: 'Em andamento' },
+          { numero: '0009876-12.2024.8.05.0001', cliente: 'cliente', nomeCliente: 'João Silva', acao: 'Divórcio Consensual', status: 'Concluído' },
+          { numero: '0004567-89.2025.8.05.0001', cliente: 'outro', nomeCliente: 'Maria Souza', acao: 'Defesa Criminal', status: 'Em andamento' }
+        ];
+        localStorage.setItem('bdProcessos', JSON.stringify(bdProcessos));
+      }
+    }
+
+    loadProcessos();
+
+    function navigate(viewName) {
+      document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+
+      navLinks.forEach(link => {
+        if (link.getAttribute('data-target')) {
+          link.classList.remove('active');
+        }
+      });
+      const activeLink = document.querySelector(`.nav-link[data-target="${viewName}"]`);
+      if (activeLink) activeLink.classList.add('active');
+
+      if (viewName === 'home') {
+        document.getElementById('view-home').classList.add('active');
+      } else if (viewName === 'login') {
+        document.getElementById('view-login').classList.add('active');
+        document.getElementById('form-login').reset();
+        document.getElementById('login-error').style.display = 'none';
+      } else if (viewName === 'cliente') {
+        loadProcessos(); // Atualiza a lista em caso de novidades do painel admin
+        document.getElementById('view-cliente').classList.add('active');
+        renderizarProcessosCliente();
+      }
+      window.scrollTo(0, 0);
+    }
+
+    document.getElementById('form-login').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const user = document.getElementById('login-user').value;
+      const pass = document.getElementById('login-pass').value;
+      const errorMsg = document.getElementById('login-error');
+
+      if (user === 'cliente' && pass === 'cliente') {
+        navigate('cliente');
+      } else {
+        errorMsg.style.display = 'block';
+      }
+    });
+
+    function logout() {
+      navigate('home');
+    }
+
+    function renderizarProcessosCliente() {
+      const container = document.getElementById('lista-processos-cliente');
+      container.innerHTML = '';
+
+      const meusProcessos = bdProcessos.filter(p => p.cliente === 'cliente');
+
+      if (meusProcessos.length === 0) {
+        container.innerHTML = '<p>Nenhum processo encontrado vinculado ao seu CPF.</p>';
+        return;
+      }
+
+      meusProcessos.forEach(p => {
+        const badgeClass = p.status === 'Concluído' ? 'status-concluido' : 'status-andamento';
+        container.innerHTML += `
+        <div class="process-card">
+          <div class="process-header">
+            <span>Processo: ${p.numero}</span>
+            <span class="status-badge ${badgeClass}">${p.status}</span>
+          </div>
+          <p><strong>Ação:</strong> ${p.acao}</p>
+        </div>
+      `;
+      });
+    }
+  </script>
 
 </body>
+
 </html>

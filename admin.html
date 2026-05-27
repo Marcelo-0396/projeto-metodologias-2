@@ -1,68 +1,482 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel Admin - Oliveira & Medeiros</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Painel Administrativo - Oliveira & Medeiros</title>
+
+  <style>
+    /* ==========================================
+       VARIÁVEIS DE CORES (A Nova Paleta)
+       ========================================== */
+    :root {
+      --sky-blue-light: #78c0e0ff;
+      --blue-bell: #449dd1ff;
+      --navy: #150578ff;
+      --deep-twilight: #0e0e52ff;
+      --ocean-twilight: #3943b7ff;
+
+      --branco: #ffffff;
+      --cinza-claro: #f4f4f4;
+      --cinza-borda: #ddd;
+    }
+
+    /* ==========================================
+       ESTILOS GERAIS E TIPOGRAFIA
+       ========================================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: sans-serif;
+    }
+
+    body {
+      color: var(--navy);
+      background-color: var(--branco);
+      line-height: 1.6;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    /* Botões */
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.3s ease;
+      border: 2px solid var(--blue-bell);
+      color: var(--blue-bell);
+      background: transparent;
+    }
+
+    .btn:hover {
+      background: var(--sky-blue-light);
+      border-color: var(--sky-blue-light);
+      color: var(--deep-twilight);
+    }
+
+    .btn-fill {
+      background: var(--blue-bell);
+      color: var(--branco);
+      border: 2px solid var(--blue-bell);
+    }
+
+    .btn-fill:hover {
+      background: var(--ocean-twilight);
+      border-color: var(--ocean-twilight);
+      color: var(--branco);
+    }
+
+    /* ==========================================
+       NAVEGAÇÃO (Navbar)
+       ========================================== */
+    #navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 5%;
+      background: var(--deep-twilight);
+      z-index: 1000;
+      transition: 0.3s;
+    }
+
+    #navbar .logo {
+      color: var(--branco);
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    #navbar .logo span {
+      color: var(--sky-blue-light);
+    }
+
+    #nav-list {
+      display: flex;
+      list-style: none;
+      gap: 20px;
+    }
+
+    .nav-link {
+      color: var(--branco);
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: var(--sky-blue-light);
+    }
+
+    .menu-toggle {
+      display: none;
+      color: var(--branco);
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    /* ==========================================
+       CONTROLE DE VISUALIZAÇÃO (SPA)
+       ========================================== */
+    .view-section {
+      display: none;
+      padding-top: 100px;
+      min-height: 80vh;
+    }
+
+    .view-section.active {
+      display: block;
+    }
+
+    /* ==========================================
+       SISTEMA: LOGIN E PAINÉIS
+       ========================================== */
+    .system-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .system-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      border-bottom: 2px solid var(--sky-blue-light);
+      padding-bottom: 10px;
+      color: var(--navy);
+    }
+
+    /* Login */
+    .login-box {
+      max-width: 400px;
+      margin: 40px auto;
+      padding: 30px;
+      background: var(--cinza-claro);
+      border-radius: 8px;
+      border-top: 5px solid var(--ocean-twilight);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: var(--navy);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--cinza-borda);
+      border-radius: 4px;
+    }
+
+    .login-error {
+      color: #e74c3c;
+      font-size: 14px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    /* Tabela de Processos */
+    .process-card {
+      background: var(--branco);
+      border-left: 5px solid var(--blue-bell);
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .process-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: var(--navy);
+    }
+
+    .status-badge {
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: bold;
+      color: var(--branco);
+    }
+
+    .status-andamento {
+      background: var(--ocean-twilight);
+    }
+
+    .status-concluido {
+      background: var(--sky-blue-light);
+      color: var(--deep-twilight);
+    }
+
+    /* Admin - Adicionar Processo */
+    .admin-form {
+      background: var(--cinza-claro);
+      padding: 20px;
+      border-radius: 6px;
+      margin-bottom: 30px;
+      border: 1px solid var(--sky-blue-light);
+    }
+
+    /* ==========================================
+       RODAPÉ (Footer)
+       ========================================== */
+    footer {
+      background: var(--deep-twilight);
+      color: var(--sky-blue-light);
+      text-align: center;
+      padding: 30px 5%;
+      margin-top: 40px;
+    }
+
+    .footer-logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--branco);
+      margin-bottom: 10px;
+    }
+
+    /* ==========================================
+       RESPONSIVIDADE
+       ========================================== */
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: block;
+      }
+
+      #nav-list {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background: var(--navy);
+        padding: 20px;
+      }
+
+      #nav-list.show {
+        display: flex;
+      }
+
+      .system-header {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .form-row {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<nav id="navbar">
-  <a href="index.html" class="logo">Oliveira <span>&</span> Medeiros</a>
-  <div class="menu-toggle" id="mobile-menu">☰</div>
-  <ul id="nav-list">
-    <li><a href="index.html" class="nav-link">Início</a></li>
-    <li><a href="processos.html" class="nav-link">Processos</a></li>
-    <li><a href="login.html" class="nav-link">Área do Cliente</a></li>
-    <li><a href="admin.html" class="nav-link active">Admin</a></li>
-  </ul>
-</nav>
+  <nav id="navbar">
+    <a href="index.html" class="logo">Oliveira <span>&</span> Medeiros</a>
+    <div class="menu-toggle" id="mobile-menu">☰</div>
+    <ul id="nav-list">
+      <li><a href="index.html" class="nav-link">Início</a></li>
+      <li><a href="index.html" class="nav-link">Área do Cliente</a></li>
+      <li><a href="#" class="nav-link active">Admin</a></li>
+    </ul>
+  </nav>
 
-<div class="page-container">
-  <div style="width: 100%; max-width: 900px;">
-    <h2 class="box-title" style="text-align: left; margin-bottom: 2rem;">Painel do Administrador</h2>
-    
-    <div class="admin-grid">
-      
-      <div class="admin-item">
-        <div style="font-size: 2.5rem; margin-bottom: 1rem;">👥</div>
-        <h3>Gestão de Clientes</h3>
-        <button class="btn btn-fill" style="width: 100%;">Novo Cliente</button>
-      </div>
+  <div id="view-login" class="view-section active">
+    <div class="system-container login-box">
+      <h2 style="text-align: center; margin-bottom: 20px; color: var(--navy);">Acesso Administrativo</h2>
 
-      <div class="admin-item">
-        <div style="font-size: 2.5rem; margin-bottom: 1rem;">⚖️</div>
-        <h3>Controle de Processos</h3>
-        <button class="btn btn-fill" style="width: 100%;">Cadastrar Processo</button>
-      </div>
-
-      <div class="admin-item">
-        <div style="font-size: 2.5rem; margin-bottom: 1rem;">👤</div>
-        <h3>Gestão de Equipe</h3>
-        <button class="btn btn-fill" style="width: 100%;">Novo Membro</button>
-      </div>
-
-      <div class="admin-item">
-        <div style="font-size: 2.5rem; margin-bottom: 1rem;">📅</div>
-        <h3>Ações e Prazos</h3>
-        <div class="admin-actions-grid">
-          <button class="btn" style="padding: 0.8rem; font-size: 0.7rem;">Agendar Reunião</button>
-          <button class="btn" style="padding: 0.8rem; font-size: 0.7rem;">Faturar Cliente</button>
-          <button class="btn" style="padding: 0.8rem; font-size: 0.7rem;">Prazos</button>
-          <button class="btn" style="padding: 0.8rem; font-size: 0.7rem;">Jurisprudência</button>
+      <form id="form-login">
+        <div class="form-group">
+          <label for="login-user">Usuário Administrativo</label>
+          <input type="text" id="login-user" required>
         </div>
-      </div>
-
+        <div class="form-group">
+          <label for="login-pass">Senha</label>
+          <input type="password" id="login-pass" required>
+        </div>
+        <p id="login-error" class="login-error">Credenciais inválidas!</p>
+        <button type="submit" class="btn btn-fill" style="width: 100%; margin-top: 10px;">Entrar</button>
+      </form>
+      <p style="text-align: center; font-size: 12px; margin-top: 15px; color: #666;">
+        (Dica de teste -> Admin: admin / admin)
+      </p>
     </div>
   </div>
-</div>
 
-<script>
-  const mobileMenu = document.getElementById('mobile-menu');
-  const navList = document.getElementById('nav-list');
-  mobileMenu.addEventListener('click', () => { navList.classList.toggle('show'); });
-</script>
+  <div id="view-admin" class="view-section">
+    <div class="system-container">
+      <div class="system-header">
+        <h2>Painel Administrativo - Todos os Processos</h2>
+        <button onclick="logout()" class="btn">Sair</button>
+      </div>
+
+      <div class="admin-form">
+        <h3 style="color: var(--navy);">Cadastrar Novo Processo</h3>
+        <form id="form-novo-processo" style="margin-top: 15px;">
+          <div class="form-row" style="display: flex; gap: 10px; margin-bottom: 10px;">
+            <div class="form-group" style="flex: 1; margin: 0;">
+              <input type="text" id="np-cliente" placeholder="Nome do Cliente" required>
+            </div>
+            <div class="form-group" style="flex: 1; margin: 0;">
+              <input type="text" id="np-numero" placeholder="Nº do Processo" required>
+            </div>
+          </div>
+          <div class="form-row" style="display: flex; gap: 10px; margin-bottom: 10px;">
+            <div class="form-group" style="flex: 2; margin: 0;">
+              <input type="text" id="np-acao" placeholder="Tipo de Ação" required>
+            </div>
+            <div class="form-group" style="flex: 1; margin: 0;">
+              <select id="np-status" required>
+                <option value="Em andamento">Em andamento</option>
+                <option value="Concluído">Concluído</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-fill">Adicionar Processo</button>
+        </form>
+      </div>
+
+      <div id="lista-processos-admin">
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">OLIVEIRA <span style="color: var(--sky-blue-light);">&</span> MEDEIROS</div>
+    <div class="footer-info">
+      📍 Edifício Mundo Plaza Empresarial — 24° Andar, Salvador/BA<br>
+      📞 (71) 98952-5751 | ✉️ contato@oliveiramedeiros.com.br<br>
+      ⏰ Seg–Sex: 8h às 18h
+    </div>
+    <div class="footer-copy" style="margin-top: 20px; font-size: 0.9em;">
+      © 2026 Oliveira & Medeiros. Todos os direitos reservados. OAB/BA 00000
+    </div>
+  </footer>
+
+  <script>
+    const mobileMenu = document.getElementById('mobile-menu');
+    const navList = document.getElementById('nav-list');
+
+    mobileMenu.addEventListener('click', () => {
+      navList.classList.toggle('show');
+    });
+
+    /* ==================================================
+       INTEGRAÇÃO COM O CLIENTE VIA LOCALSTORAGE
+       ================================================== */
+    let bdProcessos = [];
+
+    function loadProcessos() {
+      const data = localStorage.getItem('bdProcessos');
+      if (data) {
+        bdProcessos = JSON.parse(data);
+      } else {
+        bdProcessos = [
+          { numero: '0001234-56.2023.8.05.0001', cliente: 'cliente', nomeCliente: 'João Silva', acao: 'Ação Trabalhista', status: 'Em andamento' },
+          { numero: '0009876-12.2024.8.05.0001', cliente: 'cliente', nomeCliente: 'João Silva', acao: 'Divórcio Consensual', status: 'Concluído' },
+          { numero: '0004567-89.2025.8.05.0001', cliente: 'outro', nomeCliente: 'Maria Souza', acao: 'Defesa Criminal', status: 'Em andamento' }
+        ];
+        saveProcessos();
+      }
+    }
+
+    function saveProcessos() {
+      localStorage.setItem('bdProcessos', JSON.stringify(bdProcessos));
+    }
+
+    loadProcessos();
+
+    function navigate(viewName) {
+      document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+
+      if (viewName === 'login') {
+        document.getElementById('view-login').classList.add('active');
+        document.getElementById('form-login').reset();
+        document.getElementById('login-error').style.display = 'none';
+      } else if (viewName === 'admin') {
+        document.getElementById('view-admin').classList.add('active');
+        renderizarProcessosAdmin();
+      }
+      window.scrollTo(0, 0);
+    }
+
+    document.getElementById('form-login').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const user = document.getElementById('login-user').value;
+      const pass = document.getElementById('login-pass').value;
+      const errorMsg = document.getElementById('login-error');
+
+      if (user === 'admin' && pass === 'admin') {
+        navigate('admin');
+      } else {
+        errorMsg.style.display = 'block';
+      }
+    });
+
+    function logout() {
+      navigate('login');
+    }
+
+    function renderizarProcessosAdmin() {
+      const container = document.getElementById('lista-processos-admin');
+      container.innerHTML = '';
+
+      bdProcessos.forEach(p => {
+        const badgeClass = p.status === 'Concluído' ? 'status-concluido' : 'status-andamento';
+        container.innerHTML += `
+        <div class="process-card">
+          <div class="process-header">
+            <span>Processo: ${p.numero}</span>
+            <span class="status-badge ${badgeClass}">${p.status}</span>
+          </div>
+          <p><strong>Cliente:</strong> ${p.nomeCliente}</p>
+          <p><strong>Ação:</strong> ${p.acao}</p>
+        </div>
+      `;
+      });
+    }
+
+    document.getElementById('form-novo-processo').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const novo = {
+        numero: document.getElementById('np-numero').value,
+        cliente: document.getElementById('np-cliente').value.toLowerCase().replace(/\s/g, ''),
+        nomeCliente: document.getElementById('np-cliente').value,
+        acao: document.getElementById('np-acao').value,
+        status: document.getElementById('np-status').value
+      };
+
+      bdProcessos.unshift(novo);
+      saveProcessos();
+      document.getElementById('form-novo-processo').reset();
+      renderizarProcessosAdmin();
+      alert('Processo adicionado com sucesso!');
+    });
+  </script>
 
 </body>
+
 </html>
