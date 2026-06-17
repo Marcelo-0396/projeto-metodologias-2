@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oliveira & Medeiros — Advocacia</title>
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <nav id="navbar">
+    <a href="#hero" class="logo">Oliveira <span>&</span> Medeiros</a>
+    <div class="menu-toggle" id="mobile-menu">☰</div>
+    <ul id="nav-list">
+      <li><a href="#hero" class="nav-link">Início</a></li>
+      <li><a href="#sobre" class="nav-link">Sobre</a></li>
+      <li><a href="#contato" class="nav-link">Contato</a></li>
+      <li><a href="areas.html" class="nav-link text-sky">Áreas de Atuação</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section id="hero">
+      <div>
+        <p>Advocacia & Consultoria Jurídica</p>
+        <h1>Defendendo os seus <span>direitos</span><br>com excelência</h1>
+        <p>Assessoria jurídica especializada com atendimento humanizado e comprometido com os seus resultados.</p>
+        <a href="#contato" class="btn btn-fill">Fale Connosco</a>
+        <a href="#sobre" class="btn">Conheça o Escritório</a>
+      </div>
+    </section>
+    
+    <section id="office-image">
+      <img src="fachadaEscritorio.jpeg" alt="Fachada do Edifício Mundo Plaza em Salvador">
+    </section>
+
+    <section id="sobre">
+      <div>
+        <p class="section-label text-blue">Sobre o Escritório</p>
+        <h2>Tradição, ética e resultado</h2>
+        <div class="divider"></div>
+        <p>O escritório Oliveira & Medeiros atua há mais de 10 anos a oferecer soluções jurídicas completas e personalizadas. A nossa equipe é formada por profissionais altamente qualificados, com experiência em diversas áreas do direito.</p>
+
+        <div class="stats flex-gap">
+          <div><span class="text-ocean">+450</span><br>Casos resolvidos</div>
+          <div><span class="text-ocean">10+</span><br>Anos de experiência</div>
+          <div><span class="text-ocean">98%</span><br>Satisfação</div>
+        </div>
+      </div>
+    </section>
+    <section id="team-image">
+      <img src="fotosDosAdvogados.jpeg" alt="Equipe de advogados Oliveira & Medeiros">
+    </section>
+
+    <section id="contato">
+      <div class="contato-inner">
+        <p class="section-label text-blue text-center">Entre em Contato</p>
+        <h2 class="text-center">Fale com um advogado agora</h2>
+        <div class="divider center"></div>
+
+        <form id="form-contato" class="form-container">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="nome">Nome completo</label>
+              <input type="text" id="nome" placeholder="O seu nome" required>
+            </div>
+            <div class="form-group">
+              <label for="tel">Telefone / WhatsApp</label>
+              <input type="tel" id="tel" placeholder="(00) 00000-0000" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" placeholder="seu@email.com">
+          </div>
+          <div class="form-group">
+            <label for="assunto">Assunto da Consulta</label>
+            <select id="assunto" required>
+              <option value="">Selecione uma opção...</option>
+              <option>Agendar Consultoria</option>
+              <option>Dúvida sobre um Processo</option>
+              <option>Ação Trabalhista</option>
+              <option>Direito de Família / Divórcio</option>
+              <option>Defesa Criminal</option>
+              <option>Outros Assuntos</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="msg">Mensagem</label>
+            <textarea id="msg" placeholder="Descreva brevemente a sua situação..." rows="4"></textarea>
+          </div>
+          <button type="submit" class="btn btn-fill btn-block">Enviar via WhatsApp</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-logo">OLIVEIRA <span>&</span> MEDEIROS</div>
+    <div>
+      📍 Edifício Mundo Plaza Empresarial — 24° Andar, Salvador/BA<br>
+      📞 (71) 98952-5751 | ✉️ contato@oliveiramedeiros.com.br<br>
+      ⏰ Seg–Sex: 8h às 18h
+    </div>
+    <div class="footer-copy">© 2026 Oliveira & Medeiros. Todos os direitos reservados. OAB/BA 00000</div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
