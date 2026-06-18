@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atendimento Jurídico Online</title>
+
+    <!-- Import Map para módulos Firebase ES6 -->
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js",
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js",
+                "firebase/analytics": "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js"
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --bg-primary: #0a0e14;
+            --bg-secondary: #12161e;
+            --bg-chat: #1a1f2b;
+            --bg-input: #1e2430;
+            --header-bg: #0d1117;
+            --header-border: #1e2a3a;
+            --gold: #c9a96e;
+            --gold-light: #d4b87a;
+            --gold-dark: #a8884a;
+            --text-primary: #e8e6e3;
+            --text-secondary: #b0ada8;
+            --text-muted: #7a7772;
+            --bubble-cliente: #1a3a4a;
+            --bubble-cliente-border: #2a5a6a;
+            --bubble-advogado: #1e2a1e;
+            --bubble-advogado-border: #2a4a2a;
+            --bubble-cliente-sent: #0d3b4e;
+            --bubble-cliente-sent-border: #1a6078;
+            --bubble-advogado-received: #1c221c;
+            --bubble-advogado-received-border: #2d3a2d;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.6);
+            --radius-xs: 6px;
+            --radius-sm: 12px;
+            --radius-md: 18px;
+            --radius-lg: 24px;
+            --radius-xl: 28px;
+            --transition-fast: 150ms ease;
+            --transition-smooth: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+            --font-sans: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            font-family: var(--font-sans);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Fundo com padrão sutil */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at 30% 20%, rgba(201, 169, 110, 0.03) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 60%, rgba(201, 169, 110, 0.02) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(26, 58, 74, 0.06) 0%, transparent 50%);
+            opacity: 1;
+        }
+
+        /* Container principal */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            height: 100dvh;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            background: var(--bg-secondary);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* ========== HEADER ========== */
+        .chat-header {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 20px;
+            background: var(--header-bg);
+            border-bottom: 1px solid var(--header-border);
+            z-index: 10;
+            user-select: none;
+        }
+
+        .header-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(201, 169, 110, 0.3);
+        }
+
+        .header-icon svg {
+            width: 22px;
+            height: 22px;
+            fill: #1a1a1a;
+        }
+
+        .header-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .header-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.2px;
+            line-height: 1.2;
+        }
+
+        .header-subtitle {
+            font-size: 12px;
+            color: #5a9e6f;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .online-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #4caf84;
+            display: inline-block;
+            box-shadow: 0 0 6px rgba(76, 175, 132, 0.6);
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%,
+            100% {
+                box-shadow: 0 0 4px rgba(76, 175, 132, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 12px rgba(76, 175, 132, 0.9);
+            }
+        }
+
+        .header-badge {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: rgba(201, 169, 110, 0.15);
+            color: var(--gold-light);
+            padding: 5px 10px;
+            border-radius: 20px;
+            border: 1px solid rgba(201, 169, 110, 0.3);
+            white-space: nowrap;
+        }
+
+        /* ========== ÁREA DE MENSAGENS ========== */
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            scroll-behavior: smooth;
+            background: var(--bg-chat);
+            /* Padrão sutil no fundo do chat */
+            background-image:
+                radial-gradient(circle at 20% 30%, rgba(201, 169, 110, 0.015) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(26, 58, 74, 0.02) 0%, transparent 40%);
+            scrollbar-width: thin;
+            scrollbar-color: #2a3040 transparent;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #2a3040;
+            border-radius: 10px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: #3a4050;
+        }
+
+        /* Estado vazio */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            gap: 12px;
+            opacity: 0.7;
+        }
+
+        .empty-state-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: rgba(201, 169, 110, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            border: 2px dashed rgba(201, 169, 110, 0.2);
+        }
+
+        .empty-state h3 {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        .empty-state p {
+            font-size: 12px;
+            color: var(--text-muted);
+            max-width: 260px;
+        }
+
+        /* ========== BALÕES DE MENSAGEM ========== */
+        .message-wrapper {
+            display: flex;
+            flex-direction: column;
+            animation: fadeInUp 0.3s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message-wrapper.cliente {
+            align-items: flex-end;
+        }
+        .message-wrapper.advogado {
+            align-items: flex-start;
+        }
+
+        .message-bubble {
+            max-width: 78%;
+            padding: 10px 15px;
+            border-radius: var(--radius-md);
+            position: relative;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+            font-size: 14px;
+            line-height: 1.5;
+            letter-spacing: -0.1px;
+            transition: box-shadow var(--transition-smooth);
+        }
+
+        /* Balão do cliente (alinhado à direita) */
+        .message-wrapper.cliente .message-bubble {
+            background: var(--bubble-cliente-sent);
+            border: 1px solid var(--bubble-cliente-sent-border);
+            border-bottom-right-radius: var(--radius-xs);
+            color: #d0e8f0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Balão do advogado (alinhado à esquerda) */
+        .message-wrapper.advogado .message-bubble {
+            background: var(--bubble-advogado-received);
+            border: 1px solid var(--bubble-advogado-received-border);
+            border-bottom-left-radius: var(--radius-xs);
+            color: #d5e0d5;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Remetente label */
+        .message-sender-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 3px;
+            opacity: 0.7;
+        }
+        .message-wrapper.cliente .message-sender-label {
+            color: #7ab8d4;
+            text-align: right;
+        }
+        .message-wrapper.advogado .message-sender-label {
+            color: #8ab88a;
+            text-align: left;
+        }
+
+        /* Horário */
+        .message-time {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            opacity: 0.75;
+            letter-spacing: 0.2px;
+        }
+        .message-wrapper.cliente .message-time {
+            text-align: right;
+        }
+        .message-wrapper.advogado .message-time {
+            text-align: left;
+        }
+
+        /* Indicador de mensagem pendente (enviando...) */
+        .message-pending {
+            opacity: 0.6;
+        }
+        .message-pending .message-time {
+            color: #c9a96e;
+            font-style: italic;
+        }
+
+        /* Separador de data */
+        .date-separator {
+            text-align: center;
+            margin: 12px 0;
+            user-select: none;
+        }
+        .date-separator span {
+            font-size: 11px;
+            color: var(--text-muted);
+            background: rgba(30, 36, 48, 0.85);
+            padding: 5px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            letter-spacing: 0.3px;
+        }
+
+        /* ========== ÁREA DE INPUT ========== */
+        .chat-input-area {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: var(--bg-input);
+            border-top: 1px solid var(--header-border);
+            z-index: 10;
+        }
+
+        .chat-input {
+            flex: 1;
+            min-height: 44px;
+            max-height: 120px;
+            padding: 11px 16px;
+            border-radius: var(--radius-lg);
+            border: 1px solid #2a3040;
+            background: #1a1f2b;
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-size: 14px;
+            resize: none;
+            outline: none;
+            transition: all var(--transition-smooth);
+            line-height: 1.4;
+        }
+
+        .chat-input::placeholder {
+            color: #5a5a5a;
+        }
+        .chat-input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.08);
+            background: #1c2330;
+        }
+
+        .send-button {
+            flex-shrink: 0;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+            color: #1a1a1a;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-smooth);
+            box-shadow: 0 2px 8px rgba(201, 169, 110, 0.35);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .send-button:hover {
+            transform: scale(1.06);
+            box-shadow: 0 4px 16px rgba(201, 169, 110, 0.5);
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+        }
+        .send-button:active {
+            transform: scale(0.94);
+            transition: transform 80ms ease;
+            box-shadow: 0 1px 4px rgba(201, 169, 110, 0.3);
+        }
+        .send-button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            filter: grayscale(30%);
+        }
+
+        .send-button svg {
+            width: 20px;
+            height: 20px;
+            fill: #1a1a1a;
+        }
+
+        /* ========== LOADING SPINNER ========== */
+        .loading-spinner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+        }
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid rgba(201, 169, 110, 0.2);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ========== RESPONSIVO ========== */
+        @media (max-width: 600px) {
+            .app-container {
+                max-width: 100%;
+                box-shadow: none;
+                border-radius: 0;
+            }
+            .chat-header {
+                padding: 10px 14px;
+                gap: 10px;
+            }
+            .header-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
+            .header-title {
+                font-size: 14px;
+            }
+            .header-badge {
+                font-size: 9px;
+                padding: 4px 8px;
+            }
+            .chat-messages {
+                padding: 10px 12px;
+                gap: 4px;
+            }
+            .message-bubble {
+                max-width: 88%;
+                font-size: 13px;
+                padding: 9px 13px;
+            }
+            .chat-input-area {
+                padding: 10px 12px;
+                gap: 8px;
+            }
+            .chat-input {
+                min-height: 40px;
+                padding: 10px 14px;
+                font-size: 13px;
+            }
+            .send-button {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        @media (min-width: 601px) and (max-width: 900px) {
+            .app-container {
+                max-width: 95%;
+                border-radius: 0;
+            }
+        }
+
+        @media (min-width: 901px) {
+            .app-container {
+                border-radius: 6px;
+                margin-top: 0;
+            }
+            body {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #06090f;
+            }
+            .app-container {
+                height: 96vh;
+                height: 96dvh;
+                border-radius: 12px;
+                overflow: hidden;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- ========== HEADER ========== -->
+        <header class="chat-header">
+            <div class="header-icon">
+                <!-- Ícone de balança da justiça -->
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7l1.5 5.5h3C7.5 15 9.5 17 12 17s4.5-2 5.5-4.5h3L22 7l-10-5zm0 3.5L17.5 7l-1 3.5h-9L6.5 7 12 5.5zM7 14h2c0 1.5 1 3 3 3s3-1.5 3-3h2c-.5 3-3 5-5 5s-4.5-2-5-5z"/>
+                </svg>
+            </div>
+            <div class="header-info">
+                <div class="header-title">Atendimento Jurídico Online</div>
+                <div class="header-subtitle">
+                    <span class="online-dot"></span> Advogado disponível
+                </div>
+            </div>
+            <div class="header-badge">⚖️ Premium</div>
+        </header>
+
+        <!-- ========== ÁREA DE MENSAGENS ========== -->
+        <div class="chat-messages" id="chatMessages">
+            <!-- Loading spinner inicial -->
+            <div class="loading-spinner" id="loadingSpinner">
+                <div class="spinner"></div>
+            </div>
+        </div>
+
+        <!-- ========== ÁREA DE INPUT ========== -->
+        <div class="chat-input-area">
+            <textarea
+            class="chat-input"
+            id="messageInput"
+            placeholder="Digite sua mensagem..."
+            rows="1"
+            maxlength="2000"
+        ></textarea>
+        <button
+        class="send-button"
+        id="sendButton"
+        title="Enviar mensagem"
+        aria-label="Enviar mensagem"
+    >
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/>
+    </svg>
+</button>
+</div>
+</div>
+
+<!-- ========== SCRIPT FIREBASE ========== -->
+<script type="module">
+    // =====================================================
+    // IMPORTS DO FIREBASE (MÓDULOS ES6)
+    // =====================================================
+    import { initializeApp } from "firebase/app";
+    import {
+        getFirestore,
+        collection,
+        addDoc,
+        query,
+        orderBy,
+        onSnapshot,
+        serverTimestamp
+    } from "firebase/firestore";
+    import { getAnalytics } from "firebase/analytics";
+
+    // =====================================================
+    // CONFIGURAÇÃO DO FIREBASE
+    // =====================================================
+    const firebaseConfig = {
+        apiKey: "AIzaSyDo-50njb-x5gHUOSF0KcYLEIqO3-j7Mv4",
+        authDomain: "chat-com-advogado.firebaseapp.com",
+        projectId: "chat-com-advogado",
+        storageBucket: "chat-com-advogado.firebasestorage.app",
+        messagingSenderId: "265707176317",
+        appId: "1:265707176317:web:5b9ef1d9e7ca343c174c14",
+        measurementId: "G-WPWPQNJFH3"
+    };
+
+    // Inicializa o Firebase
+    const app = initializeApp(firebaseConfig);
+
+    // Inicializa o Analytics (pode falhar em alguns ambientes, mas não afeta o chat)
+    let analytics = null;
+    try {
+        analytics = getAnalytics(app);
+        console.log('✅ Firebase Analytics inicializado.');
+    } catch (error) {
+        console.warn('⚠️ Analytics não pôde ser inicializado (não afeta o chat):', error.message);
+    }
+
+    // Inicializa o Firestore
+    const db = getFirestore(app);
+    console.log('✅ Firestore inicializado.');
+
+    // =====================================================
+    // REFERÊNCIAS AOS ELEMENTOS DO DOM
+    // =====================================================
+    const chatMessages = document.getElementById('chatMessages');
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+
+    // =====================================================
+    // CONSTANTES
+    // =====================================================
+    const COLLECTION_NAME = 'massages'; // Nome exato da coleção no Firestore
+    const REMETENTE = 'cliente'; // Identificador do remetente nesta página
+
+    // =====================================================
+    // FUNÇÕES UTILITÁRIAS
+    // =====================================================
+
+    /**
+     * Formata um timestamp do Firestore (ou Date) para exibição.
+     * - Mensagens de hoje: "HH:MM"
+     * - Mensagens de outros dias: "DD/MM/YYYY HH:MM"
+     * - Timestamp nulo (pendente): "Enviando..."
+     */
+    function formatTime(timestamp) {
+        if (!timestamp) return 'Enviando...';
+        let date;
+        // Firestore Timestamp possui método .toDate()
+        if (timestamp && typeof timestamp.toDate === 'function') {
+            date = timestamp.toDate();
+        } else if (timestamp instanceof Date) {
+            date = timestamp;
+        } else {
+            return 'Enviando...';
+        }
+
+        const now = new Date();
+        const isToday =
+            date.getDate() === now.getDate() &&
+            date.getMonth() === now.getMonth() &&
+            date.getFullYear() === now.getFullYear();
+
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+
+        if (isToday) {
+            return `${hours}:${minutes}`;
+        } else {
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year} ${hours}:${minutes}`;
+        }
+    }
+
+    /**
+     * Retorna uma string de data para o separador (ex: "Hoje", "Ontem", "DD/MM/AAAA").
+     */
+    function getDateLabel(timestamp) {
+        if (!timestamp) return null;
+        let date;
+        if (timestamp && typeof timestamp.toDate === 'function') {
+            date = timestamp.toDate();
+        } else if (timestamp instanceof Date) {
+            date = timestamp;
+        } else {
+            return null;
+        }
+
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const msgDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        const diffDays = Math.floor((today - msgDate) / (1000 * 60 * 60 * 24));
+
+        if (diffDays === 0) return 'Hoje';
+        if (diffDays === 1) return 'Ontem';
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
+
+    /**
+     * Escapa caracteres HTML para prevenir XSS.
+     */
+    function escapeHTML(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    // =====================================================
+    // GERENCIAMENTO DO CHAT
+    // =====================================================
+
+    /** Referência para a função de unsubscribe do listener */
+    let unsubscribe = null;
+
+    /** Último label de data exibido (para evitar repetições) */
+    let lastDateLabel = null;
+
+    /**
+     * Inicializa o listener em tempo real na coleção "massages".
+     * Usa onSnapshot() para receber atualizações instantâneas.
+     */
+    function iniciarChat() {
+        // Referência da coleção
+        const colRef = collection(db, COLLECTION_NAME);
+
+        // Query ordenada por data crescente
+        const q = query(colRef, orderBy('data', 'asc'));
+
+        // Listener em tempo real
+        unsubscribe = onSnapshot(q, (snapshot) => {
+                // Remove o spinner de loading
+                if (loadingSpinner) {
+                    loadingSpinner.remove();
+                }
+
+                // Reseta o label de data
+                lastDateLabel = null;
+
+                // Limpa a área de mensagens (será reconstruída)
+                // Mantém apenas se não houver mensagens para mostrar empty state
+                const currentChildren = Array.from(chatMessages.children);
+                // Remove tudo exceto possíveis spinners residuais
+                chatMessages.innerHTML = '';
+
+                if (snapshot.empty) {
+                    // Exibe estado vazio
+                    chatMessages.innerHTML = `
+                            <div class="empty-state">
+                                <div class="empty-state-icon">💬</div>
+                                <h3>Nenhuma mensagem ainda</h3>
+                                <p>Inicie a conversa com o advogado. Sua primeira mensagem será enviada abaixo.</p>
+                            </div>
+                        `;
+                    return;
+                }
+
+                // Itera sobre os documentos e constrói os elementos
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const texto = data.texto || '';
+                    const remetente = data.remetente || 'cliente';
+                    const timestamp = data.data || null;
+
+                    // Verifica se precisa de separador de data
+                    const dateLabel = getDateLabel(timestamp);
+                    if (dateLabel && dateLabel !== lastDateLabel) {
+                        const separator = document.createElement('div');
+                        separator.className = 'date-separator';
+                        separator.innerHTML = `<span>${dateLabel}</span>`;
+                        chatMessages.appendChild(separator);
+                        lastDateLabel = dateLabel;
+                    }
+
+                    // Cria o wrapper da mensagem
+                    const wrapper = document.createElement('div');
+                    wrapper.className = `message-wrapper ${remetente}`;
+
+                    // Label do remetente
+                    const senderLabel = document.createElement('div');
+                    senderLabel.className = 'message-sender-label';
+                    senderLabel.textContent = remetente === 'cliente' ? 'Você' : 'Advogado';
+
+                    // Balão da mensagem
+                    const bubble = document.createElement('div');
+                    bubble.className = 'message-bubble';
+                    bubble.textContent = texto;
+
+                    // Horário
+                    const timeEl = document.createElement('div');
+                    timeEl.className = 'message-time';
+                    const formattedTime = formatTime(timestamp);
+                    timeEl.textContent = formattedTime;
+
+                    // Se a mensagem está pendente (timestamp nulo)
+                    if (!timestamp || formattedTime === 'Enviando...') {
+                        wrapper.classList.add('message-pending');
+                    }
+
+                    // Monta a hierarquia
+                    wrapper.appendChild(senderLabel);
+                    wrapper.appendChild(bubble);
+                    wrapper.appendChild(timeEl);
+                    chatMessages.appendChild(wrapper);
+                });
+
+                // Scroll automático para a última mensagem
+                scrollToBottom();
+            },
+            (error) => {
+                console.error('❌ Erro no listener do Firestore:', error);
+                if (loadingSpinner) loadingSpinner.remove();
+                chatMessages.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">⚠️</div>
+                            <h3>Erro ao carregar mensagens</h3>
+                            <p>Verifique sua conexão e recarregue a página. Detalhes: ${escapeHTML(error.message)}</p>
+                        </div>
+                    `;
+            }
+        );
+
+        console.log('👂 Listener do chat iniciado na coleção:', COLLECTION_NAME);
+    }
+
+    /**
+     * Envia uma nova mensagem para o Firestore.
+     */
+    async function enviarMensagem() {
+        const texto = messageInput.value.trim();
+        if (!texto) return;
+
+        // Desabilita o botão e input durante o envio
+        sendButton.disabled = true;
+        messageInput.disabled = true;
+
+        try {
+            const colRef = collection(db, COLLECTION_NAME);
+            await addDoc(colRef, {
+                texto: texto,
+                remetente: REMETENTE,
+                data: serverTimestamp()
+            });
+            console.log('📤 Mensagem enviada:', texto.substring(0, 50) + (texto.length > 50 ? '...' : ''));
+
+            // Limpa o input
+            messageInput.value = '';
+            // Reseta a altura do textarea
+            messageInput.style.height = 'auto';
+
+            // Scroll para o final
+            setTimeout(() => scrollToBottom(), 150);
+
+        } catch (error) {
+            console.error('❌ Erro ao enviar mensagem:', error);
+            alert('Erro ao enviar mensagem. Tente novamente.\n' + error.message);
+        } finally {
+            // Reabilita os controles
+            sendButton.disabled = false;
+            messageInput.disabled = false;
+            messageInput.focus();
+        }
+    }
+
+    /**
+     * Faz scroll suave até a última mensagem.
+     */
+    function scrollToBottom() {
+        if (chatMessages) {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    }
+
+    /**
+     * Ajusta automaticamente a altura do textarea conforme o conteúdo.
+     */
+    function autoResizeTextarea() {
+        messageInput.style.height = 'auto';
+        const newHeight = Math.min(messageInput.scrollHeight, 120);
+        messageInput.style.height = newHeight + 'px';
+    }
+
+    // =====================================================
+    // EVENT LISTENERS
+    // =====================================================
+
+    // Botão de enviar
+    sendButton.addEventListener('click', enviarMensagem);
+
+    // Enviar com Enter (Shift+Enter para nova linha)
+    messageInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            enviarMensagem();
+        }
+    });
+
+    // Auto-resize do textarea
+    messageInput.addEventListener('input', autoResizeTextarea);
+
+    // Scroll ao carregar a página (caso haja mensagens)
+    window.addEventListener('load', () => {
+        setTimeout(() => scrollToBottom(), 500);
+    });
+
+    // Cleanup ao sair da página
+    window.addEventListener('beforeunload', () => {
+        if (unsubscribe) {
+            unsubscribe();
+            console.log('🔌 Listener do chat desconectado.');
+        }
+    });
+
+    // =====================================================
+    // INICIALIZAÇÃO
+    // =====================================================
+    console.log('🚀 Iniciando chat do cliente...');
+    console.log('📋 Coleção:', COLLECTION_NAME);
+    console.log('👤 Remetente:', REMETENTE);
+    iniciarChat();
+
+    // Foco automático no input
+    messageInput.focus();
+</script>
+</body>
+</html>
